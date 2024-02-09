@@ -1,0 +1,31 @@
+-- Create a table for patients
+CREATE TABLE Patients (
+    PatientID INT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    Age INT,
+    Gender VARCHAR(10)
+);
+
+-- Insert sample data into the Patients table
+INSERT INTO Patients VALUES
+(1, 'John', 'Doe', 35, 'Male'),
+(2, 'Jane', 'Smith', 45, 'Female'),
+(3, 'Bob', 'Johnson', 28, 'Male'),
+(4, 'Alice', 'Williams', 50, 'Female'),
+(5, 'Charlie', 'Brown', 40, 'Male'),
+(6, 'Eva', 'Miller', 32, 'Female'),
+(7, 'David', 'Anderson', 55, 'Male'),
+(8, 'Grace', 'Thomas', 48, 'Female'),
+(9, 'Michael', 'Taylor', 37, 'Male'),
+(10, 'Sophia', 'Moore', 42, 'Female'),
+(11, 'Ryan', 'Hill', 29, 'Male'),
+(12, 'Olivia', 'Jones', 38, 'Female'),
+(13, 'William', 'White', 45, 'Male'),
+(14, 'Emily', 'Clark', 33, 'Female'),
+(15, 'Daniel', 'Walker', 50, 'Male'),
+(16, 'Ava', 'Robinson', 27, 'Female'),
+(17, 'James', 'Carter', 43, 'Male'),
+(18, 'Mia', 'Young', 36, 'Female'),
+(19, 'Matthew', 'Scott', 41, 'Male'),
+(20, 'Emma', 'Ward', 31, 'Female');
