@@ -1,0 +1,92 @@
+--Calculate Overall Medication Adherence Rate
+select
+count(adherent) as total_count,
+sum(case when adherent='true' then 1 else 0 end) as adherent,
+sum(case when adherent='true' then 1 else 0 end)*100/count(adherent) as overall_adherence_rate
+from medicationadherence
+
+--Calculate Adherence by Medication
+select medicationname,
+count(adherent) as total_count,
+sum(case when adherent='true' then 1 else 0 end) as adherent,
+sum(case when adherent='true' then 1 else 0 end)*100/count(adherent) as medication_adherence_rate
+from medicationadherence
+inner join medications
+on medicationadherence.medicationid=medications.medicationid
+group by medicationname
+order by 4 desc
+
+--Calculate Patient Adherence Patterns with less than 80%
+with cte as(
+select firstname,lastname,
+count(adherent) as total_count,
+sum(case when adherent='true' then 1 else 0 end) as adherent,
+sum(case when adherent='true' then 1 else 0 end)*100/count(adherent) as patient_adherence_rate
+from medicationadherence
+inner join patients
+on patients.patientid=medicationadherence.patientid
+group by firstname, lastname
+)
+select concat(firstname||' '||lastname) as full_name,
+patient_adherence_rate
+from cte
+where patient_adherence_rate < 80
+
+--Calculate Medication adherence based on Age group
+select case 
+ when Age between 19 and 30 then '19-30'
+ when Age between 31 and 50 then '31-50'
+ when Age between 51 and 65 then '51-65'
+ else '65+'
+ end age_group,
+count(adherent) as total_count,
+sum(case when adherent='true' then 1 else 0 end) as adherent,
+sum(case when adherent='true' then 1 else 0 end)*100/count(adherent) as age_adherence_rate
+from medicationadherence
+inner join patients
+on medicationadherence.patientid=patients.patientid
+GROUP BY
+ case 
+ when Age between 19 and 30 then '19-30'
+ when Age between 31 and 50 then '31-50'
+ when Age between 51 and 65 then '51-65'
+ else '65+'
+ end 
+order by 4 desc
+
+--Calculate Medication adherence based on gender
+select gender,
+count(adherent) as total_count,
+sum(case when adherent='true' then 1 else 0 end) as adherent,
+sum(case when adherent='true' then 1 else 0 end)*100/count(adherent) as gender_adherence_rate
+from medicationadherence
+inner join patients
+on medicationadherence.patientid=patients.patientid
+group by gender
+
+--Calculate Impact of dosage on adherence
+select medications.dosage,
+count(adherent) as total_count,
+sum(case when adherent='true' then 1 else 0 end) as adherent,
+sum(case when adherent='true' then 1 else 0 end)*100/count(adherent) as dosage_adherence_rate
+from medicationadherence
+inner join medications
+on medicationadherence.medicationid=medications.medicationid
+group by medications.dosage
+order by 1 asc
+
+--Calculate Refill adherence trend over time
+select extract(month from refilldate) as month,
+count(adherent) as total_count,
+sum(case when adherent='true' then 1 else 0 end) as adherent,
+sum(case when adherent='true' then 1 else 0 end)*100/count(adherent) as refill_adherence_rate
+from medicationadherence
+group by extract(month from refilldate) 
+order by 4 desc
+
+--Identify Non-Adherent Patients
+select concat(firstname||' '||lastname) as full_name
+from medicationadherence
+inner join patients
+on medicationadherence.patientid=patients.patientid
+where adherent='false'
